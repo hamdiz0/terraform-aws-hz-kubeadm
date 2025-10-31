@@ -22,12 +22,12 @@ output "k8s_api" {
 
 # Join Scripts Outputs
 output "worker_join_script" {
-  value       = file("./scripts/worker_join_script.sh")
+  value       = file("${path.module}/scripts/worker_join_script.sh")
   description = "A script containing the join command used to attach new worker nodes to the cluster"
 }
 
 output "master_join_script" {
-  value       = file("./scripts/master_join_script.sh")
+  value       = file("${path.module}/scripts/master_join_script.sh")
   description = "A script containing the join command used to attach new master nodes to the cluster"
 }
 

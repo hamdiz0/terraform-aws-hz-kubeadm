@@ -38,7 +38,4 @@ terraform.rc
 key
 key/*
 
-scripts/master_join_script.sh
-scripts/worker_join_script.sh
-
 terraform.tfvars

@@ -12,7 +12,7 @@ resource "aws_instance" "master" {
   user_data = base64encode(<<-EOF
     #!/bin/bash
     HOST_TYPE=master-${aws_subnet.private_subnet[count.index % 3].availability_zone}
-    ${file("./scripts/k8s_node_setup.sh")}
+    ${file("${path.module}/scripts/k8s_node_setup.sh")}
     EOF
   )
   # ignore name tagging as the instance tags it self
@@ -40,7 +40,7 @@ resource "null_resource" "join_masters" {
 
   # copy the script to the instance
   provisioner "file" {
-    source      = "./scripts/master_join_script.sh"
+    source      = "${path.module}/scripts/master_join_script.sh"
     destination = "/home/${var.instance_user}/master_join_script.sh"
   }
 

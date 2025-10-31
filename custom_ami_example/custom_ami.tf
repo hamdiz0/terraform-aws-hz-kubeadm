@@ -1,8 +1,8 @@
 module "ami-gen" {
   source  = "hamdiz0/hz-ami-gen/aws"
 
-  public_ssh_key_path = "../key/ssh-key.pub"
-  private_ssh_key_path = "../key/ssh-key"
+  public_ssh_key_path = "./key/ssh-key.pub"
+  private_ssh_key_path = "./key/ssh-key"
   script_path = "./ami_setup.sh"
 
   public_subnet_id = "subnet-0372a2f746c7ea032"

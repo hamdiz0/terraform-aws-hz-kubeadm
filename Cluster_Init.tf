@@ -16,7 +16,7 @@ resource "null_resource" "initilize_cluster" {
 
   # copy the init script to the instance
   provisioner "file" {
-    source      = "./scripts/cluster_init.sh"
+    source      = "${path.module}/scripts/cluster_init.sh"
     destination = "/home/${var.instance_user}/cluster_init.sh"
   }
 
@@ -39,11 +39,11 @@ resource "null_resource" "initilize_cluster" {
         
       scp -o StrictHostKeyChecking=no \
         master-1:/home/${var.instance_user}/worker_join_script.sh \
-        ./scripts/worker_join_script.sh
+        ${path.module}/scripts/worker_join_script.sh
 
       scp -o StrictHostKeyChecking=no \
         master-1:/home/${var.instance_user}/master_join_script.sh \
-        ./scripts/master_join_script.sh    
+        ${path.module}/scripts/master_join_script.sh    
     EOT
   }
   depends_on = [local_file.ssh_config]
@@ -60,7 +60,7 @@ resource "null_resource" "cluster_add_ons" {
     bastion_user = var.bastion_host_user
   }
   provisioner "file" {
-    source      = "./scripts/cluster_add_ons.sh"
+    source      = "${path.module}/scripts/cluster_add_ons.sh"
     destination = "/home/${var.instance_user}/cluster_add_ons.sh"
   }
   provisioner "remote-exec" {

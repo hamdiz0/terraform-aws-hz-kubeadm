@@ -37,3 +37,12 @@ helm install aws-cloud-controller-manager \
           --controllers=*\,-node-route-controller, \
           --cluster-cidr=10.32.0.0/12 \
         }"
+
+### Ingress ###
+# install nginx ingress controller
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress --create-namespace \
+  --set controller.service.type=LoadBalancer \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" \
+  --set controller.service.externalTrafficPolicy=Local

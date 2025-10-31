@@ -1,6 +1,7 @@
 # hz-kubeadm
 
 #### A Terraform module that deploys a Kubernetes cluster on AWS with Kubeadm.
+<img src="./imgs/struc.png" style="width:100%">
 
 ##### This module creates:
 - A `VPC` with six subnets in three Availability Zones:
@@ -23,6 +24,14 @@
 - Some policies are required as mentioned in the documentation => [Kubernetes AWS Cloud Provider](https://cloud-provider-aws.sigs.k8s.io/prerequisites/).
 - The scripts are mainly used to initialize the cluster and generate the join scripts used for adding new worker or master nodes to the cluster.
 - The scripts also leverage the AWS command-line tool; this is used by an instance/node to tag itself with a specific name (simplifies troubleshooting).
+- The `cluster_init.sh` script will install the `Weave` cni plugin. 
+- The `cluster_add_ons.sh` will install helm and use it to setup the `AWS Cloud Controller Manager` and the `Nginx Ingress Controller`. 
+- `--cluster-cidr=10.32.0.0/12`: this option is used in the helm installation of the `AWS Cloud Controller Manager` wich is the default cidr block used by `Weave`.
+- The `AWS Cloud Controller Manager` will automatically create a Load Balancer for the `Nginx Ingress Controller`. You can access the the services managed by the Ingress Controller through Load Balancer's DNS.
+
+<img src="./imgs/ccm-nginx.png" style="width:100%">
+
+=> Note that the Load Balancer created in by the `AWS Cloud Controller Manager` is not managed by the module thus you must deleted manually if you want to destroy the cluster.
 
 ##### NAT option:
 - You can choose either a NAT-Gateway or a NAT instance for the cluster nodes.
@@ -51,24 +60,24 @@ module "hz-kubeadm" {
     ssh_private_key_location = "./key-example/ssh-key"
     ssh_public_key_location  = "./key-example/ssh-key.pub"
   
-    bastion_ami             = ami-0359cb6c0c97c6607 (debian AMI)
-    bastion_host_user       = admin (default user name for the debian AMI)
-    bastion_instance_type   = t2.micro
+    bastion_ami             = "ami-0359cb6c0c97c6607" # (debian AMI)
+    bastion_host_user       = "admin" # (default user name for the debian AMI)
+    bastion_instance_type   = "t2.micro"
   
     k8s_ami_id              = "ami-..."
 
-    instance_user           = "default user of the Kubernetes AMI"
-    local_user              = "current user name ($ whoami)"
+    instance_user           = "ec2-user" # "default user of the Kubernetes AMI"
+    local_user              = "user" # "current user name ($ whoami)"
   
-    master_instance_type    = m5.large
-    worker_instance_type    = m5.medium
+    master_instance_type    = "m5.large"
+    worker_instance_type    = "m5.medium"
     control_plane_number    = 1
   
     min_worker_number       = 2
     max_worker_number       = 5
   
     use_internal_lb         = true
-    use_nat_gateway         = false (false: uses the NAT instance)
-    nat_instance_type       = t2.micro
+    use_nat_gateway         = false # (false: uses the NAT instance)
+    nat_instance_type       = "t2.micro"
 }
 ```

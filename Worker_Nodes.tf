@@ -3,8 +3,8 @@ data "template_file" "worker_user_data" {
   template   = <<-EOF
   #!/bin/bash
   HOST_TYPE=worker
-  $${file("./scripts/k8s_node_setup.sh")}
-  $${file("./scripts/worker_join_script.sh")}
+  $${file("${path.module}/scripts/k8s_node_setup.sh")}
+  $${file("${path.module}/scripts/worker_join_script.sh")}
   EOF
   depends_on = [null_resource.initilize_cluster] # make sure the template is only generated after the join scripts are retrieved
 }

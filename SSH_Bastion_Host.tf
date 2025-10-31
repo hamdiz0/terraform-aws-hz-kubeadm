@@ -25,7 +25,7 @@ resource "local_file" "ssh_config" {
     Host bastion
       HostName ${aws_instance.bastion.public_ip}
       User ${var.bastion_host_user}
-      IdentityFile ${abspath(path.module)}/../key/ssh-key
+      IdentityFile ${abspath(path.module)}/../../../${var.ssh_private_key_location}
       ForwardAgent yes
 
     # Master nodes configuration
@@ -33,7 +33,7 @@ resource "local_file" "ssh_config" {
       Host master-${i + 1}
         HostName ${instance.private_ip}
         User ${var.instance_user}
-        IdentityFile ${abspath(path.module)}/../key/ssh-key
+        IdentityFile ${abspath(path.module)}/../../../${var.ssh_private_key_location}
         ProxyJump bastion
     EOF
   ])}
